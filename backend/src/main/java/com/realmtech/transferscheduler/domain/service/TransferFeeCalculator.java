@@ -43,6 +43,7 @@ public class TransferFeeCalculator {
         BigDecimal fee;
 
         // TODO: Refatorar essa lógica para torná-la mais legível
+        // Talvez couberia criar uma estratégia de cálculo de taxa baseada em um padrão de projeto, como Strategy ou Chain of Responsibility.
         if (days == 0) {
             fee = SAME_DAY_FIXED_FEE.add(
                     transfer.getAmount().multiply(SAME_DAY_PERCENTAGE)

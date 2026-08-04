@@ -77,6 +77,28 @@ class TransferFeeCalculatorTest {
         assertThrows(DomainException.class, () -> calculator.calculate(transfer));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"0", "-10.00"})
+    void shouldThrowWhenAmountIsNotPositive(String amount) {
+        TransferSchedule transfer = buildTransfer(new BigDecimal(amount), 5);
+
+        assertThrows(DomainException.class, () -> calculator.calculate(transfer));
+    }
+
+    @Test
+    void shouldThrowWhenTransferDateIsNull() {
+        TransferSchedule transfer = TransferSchedule.create(
+                "1234567890", "0987654321", AMOUNT, BigDecimal.ZERO, null);
+
+        assertThrows(DomainException.class, () -> calculator.calculate(transfer));
+    }
+
+    @Test
+    void shouldThrowWhenTransferDateIsBeforeSchedulingDate() {
+        TransferSchedule transfer = buildTransfer(AMOUNT, -1);
+
+        assertThrows(DomainException.class, () -> calculator.calculate(transfer));
+    }
 
     private TransferSchedule buildTransfer(BigDecimal amount, long daysFromNow) {
         return TransferSchedule.create(
