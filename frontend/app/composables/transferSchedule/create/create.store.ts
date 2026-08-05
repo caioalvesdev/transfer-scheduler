@@ -1,5 +1,6 @@
 import { validadeSchema, type Schema, type SchemaInput } from '.'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { getLocalTimeZone, today } from '@internationalized/date'
 
 const apiUrl = useRuntimeConfig().public.apiUrl
 const toast = useToast()
@@ -8,12 +9,13 @@ export function useTransferScheduleCreate() {
   const validationSchema = validadeSchema
   const isLoading = ref<boolean>(false)
   const isSuccess = ref<boolean>(false)
-  const formState = reactive<Partial<SchemaInput>>({
-    sourceAccount: undefined,
-    destinationAccount: undefined,
+  const initialFormState = (): Partial<SchemaInput> => ({
+    sourceAccount: '',
+    destinationAccount: '',
     amount: undefined,
-    transferDate: new Date().toISOString().slice(0, 10)
+    transferDate: today(getLocalTimeZone())
   })
+  const formState = reactive<Partial<SchemaInput>>(initialFormState())
 
   async function handleSubmit(event: FormSubmitEvent<Schema>): Promise<void> {
     try {
@@ -23,12 +25,7 @@ export function useTransferScheduleCreate() {
         body: event.data
       })
       toast.add({ title: 'Transferência agendada com sucesso' })
-      Object.assign(formState, {
-        sourceAccount: undefined,
-        destinationAccount: undefined,
-        amount: undefined,
-        transferDate: new Date().toISOString().slice(0, 10)
-      })
+      Object.assign(formState, initialFormState())
       isSuccess.value = true
     } catch (error) {
       console.error(error)

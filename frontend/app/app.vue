@@ -1,4 +1,6 @@
 <script setup>
+import { pt_br } from '@nuxt/ui/locale'
+
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -7,7 +9,7 @@ useHead({
     { rel: 'icon', href: '/favicon.ico' }
   ],
   htmlAttrs: {
-    lang: 'en'
+    lang: 'pt-BR'
   }
 })
 
@@ -25,8 +27,11 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
-    <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
+  <UApp :locale="pt_br">
+    <NuxtLoadingIndicator
+      color="var(--ui-primary)"
+      :height="2"
+    />
     <UMain>
       <NuxtLayout>
         <NuxtPage />
