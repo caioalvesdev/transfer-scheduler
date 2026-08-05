@@ -6,12 +6,14 @@ import com.realmtech.transferscheduler.api.model.TransferScheduleResponse;
 import com.realmtech.transferscheduler.domain.model.TransferSchedule;
 import com.realmtech.transferscheduler.domain.service.TransferScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/transfer-schedule")
@@ -29,8 +31,9 @@ public class TransferScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TransferScheduleResponse>> findAll() {
-        List<TransferSchedule> transferSchedules = transferScheduleService.findAll();
-        return ResponseEntity.ok(transferScheduleMapper.toCollectionModel(transferSchedules));
+    public ResponseEntity<Page<TransferScheduleResponse>> findAll(@PageableDefault(size = 10) Pageable pageable) {
+        Page<TransferSchedule> transferSchedules = transferScheduleService.findAll(pageable);
+        return ResponseEntity.ok(transferSchedules.map(transferScheduleMapper::toModel));
     }
 }
+

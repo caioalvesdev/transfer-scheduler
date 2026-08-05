@@ -3,11 +3,12 @@ package com.realmtech.transferscheduler.domain.service;
 import com.realmtech.transferscheduler.domain.model.TransferSchedule;
 import com.realmtech.transferscheduler.domain.repository.TransferScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class TransferScheduleService {
         return repository.save(transferSchedule);
     }
 
-    public List<TransferSchedule> findAll() {
-        return repository.findAll();
+    public Page<TransferSchedule> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }

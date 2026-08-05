@@ -7,6 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -49,9 +53,10 @@ class TransferScheduleServiceTest {
                 "1234567890", "0987654321", new BigDecimal("100.00"), null,
                 OffsetDateTime.now().plusDays(5));
 
-        when(repository.findAll()).thenReturn(List.of(transferSchedule));
+        Pageable pageable = PageRequest.of(0, 10);
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(transferSchedule)));
 
-        List<TransferSchedule> result = service.findAll();
+        Page<TransferSchedule> result = service.findAll(pageable);
 
         assertThat(result).containsExactly(transferSchedule);
     }
