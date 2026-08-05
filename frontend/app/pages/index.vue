@@ -1,75 +1,68 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "@nuxt/ui/components/DropdownMenu.vue"
+import type { TableColumn } from '@nuxt/ui'
+import { useTransferScheduleCreate } from '~/composables/transferSchedule/create'
+
+interface TransferScheduleModel {
+  id: string
+  sourceAccount: string
+  destinationAccount: string
+  amount: number
+  fee: number
+  transferDate: Date
+  schedulingDate: Date
+}
+
+const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+const dateFormatter = new Intl.DateTimeFormat('pt-BR')
+
+const columns: TableColumn<TransferScheduleModel>[] = [
+  { accessorKey: 'sourceAccount', header: 'Conta de origem' },
+  { accessorKey: 'destinationAccount', header: 'Conta de destino' },
+  { accessorKey: 'amount', header: 'Valor', cell: ({ row }) => currencyFormatter.format(row.original.amount) },
+  { accessorKey: 'fee', header: 'Taxa', cell: ({ row }) => currencyFormatter.format(row.original.fee) },
+  { accessorKey: 'transferDate', header: 'Data da transferência', cell: ({ row }) => dateFormatter.format(new Date(row.original.transferDate)) },
+  { accessorKey: 'schedulingDate', header: 'Data de agendamento', cell: ({ row }) => dateFormatter.format(new Date(row.original.schedulingDate)) }
+]
 
 definePageMeta({
   layout: 'default',
   scrollToTop: true
 })
 
-const items = [
-  [
-    {
-      label: "New mail",
-      icon: "i-lucide-send",
-      to: "/inbox",
-    },
-    {
-      label: "New customer",
-      icon: "i-lucide-user-plus",
-      to: "/customers",
-    },
-  ],
-] satisfies DropdownMenuItem[][]
-
 const toast = useToast()
+const apiUrl = useRuntimeConfig().public.apiUrl
 
 const isOpenUploadModal = ref<boolean>(false)
 
-async function handleRefreshData() {
-  toast.add({
-    title: "Atualizado",
-    description: "Os dados foram atualizados com sucesso.",
-    duration: 2500
-  })
-}
-const data = ref([
-  {
-    id: '4600',
-    date: '2024-03-11T15:30:00',
-    status: 'paid',
-    email: 'james.anderson@example.com',
-    amount: 594
-  },
-  {
-    id: '4599',
-    date: '2024-03-11T10:10:00',
-    status: 'failed',
-    email: 'mia.white@example.com',
-    amount: 276
-  },
-  {
-    id: '4598',
-    date: '2024-03-11T08:50:00',
-    status: 'refunded',
-    email: 'william.brown@example.com',
-    amount: 315
-  },
-  {
-    id: '4597',
-    date: '2024-03-10T19:45:00',
-    status: 'paid',
-    email: 'emma.davis@example.com',
-    amount: 529
-  },
-  {
-    id: '4596',
-    date: '2024-03-10T15:55:00',
-    status: 'paid',
-    email: 'ethan.harris@example.com',
-    amount: 639
+const {
+  data,
+  refresh,
+  pending
+} = await useFetch<TransferScheduleModel[]>(apiUrl + '/api/transfer-schedule', {
+  key: 'transfer-schedule',
+  method: 'GET',
+  default: () => [],
+  onRequestError({ error }) {
+    toast.add({ title: 'Algo deu errado' })
+    console.error(error)
   }
-])
-console.log(useRuntimeConfig())
+})
+
+const {
+  formState,
+  validationSchema,
+  isLoading,
+  isSuccess,
+  handleSubmit
+} = useTransferScheduleCreate()
+
+watch(isSuccess, (success) => {
+  if (success) {
+    isOpenUploadModal.value = false
+    isSuccess.value = false
+    refresh()
+  }
+})
 </script>
 
 <template>
@@ -88,21 +81,15 @@ console.log(useRuntimeConfig())
               </UChip>
             </UButton>
           </UTooltip>
-          <UDropdownMenu :items="items">
-            <UButton icon="i-lucide-plus" size="md" class="rounded-full" />
-          </UDropdownMenu>
         </template>
       </UDashboardNavbar>
       <UDashboardToolbar :ui="{ right: 'gap-3' }">
-        <template #left>
-        </template>
-
         <template #right>
           <UButton
             label="Recarregar"
             variant="soft"
             icon="i-lucide-refresh-cw"
-            @click="handleRefreshData"
+            @click="() => refresh()"
           />
           <UModal
             v-model:open="isOpenUploadModal"
@@ -110,14 +97,49 @@ console.log(useRuntimeConfig())
             title="Adicioanar Transferência"
             description="Adicione uma nova transferência para agendamento."
           >
+            <template #body>
+              <UForm
+                :disabled="isLoading"
+                :state="formState"
+                :schema="validationSchema"
+                class="space-y-4"
+                @submit="handleSubmit"
+              >
+                <UFormField label="Conta de origem" name="sourceAccount">
+                  <UInput v-model="formState.sourceAccount" class="w-full"/>
+                </UFormField>
+                <UFormField label="Conta de destino" name="destinationAccount">
+                  <UInput v-model="formState.destinationAccount" class="w-full"/>
+                </UFormField>
+                <UFormField label="Valor" name="amount">
+                  <UInputNumber v-model="formState.amount" class="w-full"/>
+                </UFormField>
+                <UFormField label="Data da transferência" name="transferDate">
+                  <UInput v-model="formState.transferDate" type="date" class="w-full"/>
+                </UFormField>
+                <UButton
+                  class="mt-5"
+                  block
+                  size="lg"
+                  type="submit"
+                  :loading="isLoading"
+                >
+                  Adicionar Transferência
+                </UButton>
+              </UForm>
+            </template>
             <UButton label="Nova Transferência" variant="solid" icon="i-lucide-upload-cloud"/>
           </UModal>
         </template>
       </UDashboardToolbar>
-
     </template>
     <template #body>
-        <UTable :data="data" class="flex-1" />
+      <UTable
+        :data="data"
+        :columns="columns"
+        :loading="pending"
+        class="flex-1"
+      />
     </template>
   </UDashboardPanel>
 </template>

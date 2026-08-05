@@ -1,64 +1,36 @@
 <script setup lang="ts">
-import { chatMessage } from "#build/ui";
-import type { NavigationMenuItem } from "@nuxt/ui";
+import type { NavigationMenuItem } from '@nuxt/ui'
 
-// const route = useRoute();
-const toast = useToast();
-
-const open = ref(false);
+const open = ref(false)
 
 const links = [
   [
     {
-      label: "Home",
-      icon: "i-lucide-house",
-      to: "/",
+      label: 'Home',
+      icon: 'i-lucide-house',
+      to: '/',
       onSelect: () => {
-        open.value = false;
-      },
+        open.value = false
+      }
     },
-    // {
-    //   label: "Inbox",
-    //   icon: "i-lucide-inbox",
-    //   to: "/inbox",
-    //   badge: "4",
-    //   onSelect: () => {
-    //     open.value = false;
-    //   },
-    // },
-    // {
-    //   label: "Customers",
-    //   icon: "i-lucide-users",
-    //   to: "/customers",
-    //   onSelect: () => {
-    //     open.value = false;
-    //   },
-    // },
     {
-      label: "Configurações",
-      to: "/settings",
-      icon: "i-lucide-settings",
+      label: 'Configurações',
+      to: '/settings',
+      icon: 'i-lucide-settings',
       defaultOpen: true,
-      type: "trigger",
+      type: 'trigger',
       children: [
         {
-          label: "Geral",
-          to: "/settings",
+          label: 'Geral',
+          to: '/settings',
           exact: true,
           onSelect: () => {
-            open.value = false;
-          },
-        },
-        {
-          label: "Membros",
-          to: "/settings/members",
-          onSelect: () => {
-            open.value = false;
+            open.value = false
           }
         },
         {
-          label: "Segurança",
-          to: "/settings/security",
+          label: 'Segurança',
+          to: '/settings/security',
           onSelect: () => {
             open.value = false
           }
@@ -70,8 +42,8 @@ const links = [
 
 const groups = computed(() => [
   {
-    id: "links",
-    label: "Go to",
+    id: 'links',
+    label: 'Go to',
     items: links.flat()
   }
 ])
@@ -80,38 +52,9 @@ const user = ref({
   name: 'Caio Ximenes',
   avatar: {
     src: 'https://avatars.githubusercontent.com/u/80227027?v=4&size=64',
-    alt: 'Benjamin Canac'
+    alt: 'Caio Ximenes'
   }
 })
-
-onMounted(async () => {
-  const cookie = useCookie("cookie-consent");
-  if (cookie.value === "accepted") {
-    return;
-  }
-
-  toast.add({
-    title:
-      "Usamos cookies próprios para melhorar sua experiência em nosso site.",
-    duration: 0,
-    close: false,
-    actions: [
-      {
-        label: "Aceitar",
-        color: "neutral",
-        variant: "outline",
-        onClick: () => {
-          cookie.value = "accepted";
-        },
-      },
-      {
-        label: "Recusar",
-        color: "neutral",
-        variant: "ghost",
-      },
-    ],
-  });
-});
 </script>
 
 <template>
@@ -124,7 +67,6 @@ onMounted(async () => {
       class="bg-elevated/25"
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
-
       <template #default="{ collapsed }">
         <UDashboardSearchButton
           :collapsed="collapsed"
@@ -138,14 +80,6 @@ onMounted(async () => {
           tooltip
           popover
         />
-
-        <!-- <UNavigationMenu
-          :collapsed="collapsed"
-          :items="links[1]"
-          orientation="vertical"
-          tooltip
-          class="mt-auto"
-        /> -->
       </template>
 
       <template #footer>
@@ -167,7 +101,5 @@ onMounted(async () => {
     <UDashboardSearch :groups="groups" />
 
     <slot />
-
-    <!-- <DashboardNotificationsSlideover /> -->
   </UDashboardGroup>
 </template>
