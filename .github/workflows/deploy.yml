@@ -88,13 +88,13 @@ jobs:
                 container_name: desafiotecnico-backend
                 restart: always
                 ports:
-                  - "8080:8080"
+                  - "8085:8080"
               frontend:
                 image: caiodev027/desafiotecnico-frontend:${{ github.event.workflow_run.head_sha }}
                 container_name: desafiotecnico-frontend
                 restart: always
                 ports:
-                  - "3000:3000"
+                  - "3005:3000"
             EOF
 
             docker compose pull
