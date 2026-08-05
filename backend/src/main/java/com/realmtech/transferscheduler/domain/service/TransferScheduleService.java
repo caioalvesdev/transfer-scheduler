@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,5 +22,9 @@ public class TransferScheduleService {
         transferSchedule.setFee(fee);
 
         return repository.save(transferSchedule);
+    }
+
+    public List<TransferSchedule> findAll() {
+        return repository.findAll();
     }
 }

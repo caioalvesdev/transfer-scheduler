@@ -5,6 +5,9 @@ import com.realmtech.transferscheduler.api.model.TransferScheduleResponse;
 import com.realmtech.transferscheduler.domain.model.TransferSchedule;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class TransferScheduleMapper {
 
@@ -28,5 +31,11 @@ public class TransferScheduleMapper {
                 .transferDate(transferSchedule.getTransferDate())
                 .schedulingDate(transferSchedule.getSchedulingDate())
                 .build();
+    }
+
+    public List<TransferScheduleResponse> toCollectionModel(List<TransferSchedule> transferSchedules) {
+        return transferSchedules.stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
     }
 }
