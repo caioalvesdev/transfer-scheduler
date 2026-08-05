@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -36,8 +37,13 @@ public class TransferScheduleRequest {
     private BigDecimal amount;
 
     @NotNull(message = "A data da transferência é obrigatória.")
-    @FutureOrPresent(
-            message = "A data da transferência deve ser hoje ou uma data futura."
-    )
     private OffsetDateTime transferDate;
+
+    @AssertTrue(message = "A data da transferência deve ser hoje ou uma data futura.")
+    private boolean isTransferDateValid() {
+        if (transferDate == null) {
+            return true;
+        }
+        return !transferDate.toLocalDate().isBefore(LocalDate.now(transferDate.getOffset()));
+    }
 }

@@ -87,6 +87,52 @@ class TransferScheduleControllerTest {
     }
 
     @Test
+    void shouldReturn201WhenTransferDateIsToday() throws Exception {
+        TransferSchedule entity = TransferSchedule.create(
+                "1234567890", "0987654321", new BigDecimal("100.00"), null,
+                OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0));
+        TransferScheduleResponse response = TransferScheduleResponse.builder()
+                .id(entity.getId())
+                .sourceAccount(entity.getSourceAccount())
+                .destinationAccount(entity.getDestinationAccount())
+                .amount(entity.getAmount())
+                .fee(new BigDecimal("3.00"))
+                .transferDate(entity.getTransferDate())
+                .schedulingDate(entity.getSchedulingDate())
+                .build();
+
+        when(transferScheduleMapper.toEntity(any())).thenReturn(entity);
+        when(transferScheduleService.create(entity)).thenReturn(entity);
+        when(transferScheduleMapper.toModel(entity)).thenReturn(response);
+
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("sourceAccount", "1234567890");
+        requestBody.put("destinationAccount", "0987654321");
+        requestBody.put("amount", new BigDecimal("100.00"));
+        requestBody.put("transferDate", entity.getTransferDate());
+
+        mockMvc.perform(post("/api/transfer-schedule")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void shouldReturn400WhenTransferDateIsYesterday() throws Exception {
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("sourceAccount", "1234567890");
+        requestBody.put("destinationAccount", "0987654321");
+        requestBody.put("amount", new BigDecimal("100.00"));
+        requestBody.put("transferDate", OffsetDateTime.now().minusDays(1));
+
+        mockMvc.perform(post("/api/transfer-schedule")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.properties.fields.transferDateValid").exists());
+    }
+
+    @Test
     void shouldReturn400WhenBodyIsMalformed() throws Exception {
         Map<String, Object> requestBody = new LinkedHashMap<>();
         requestBody.put("sourceAccount", "1234567890");
