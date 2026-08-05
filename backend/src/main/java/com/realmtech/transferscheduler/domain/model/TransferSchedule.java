@@ -4,6 +4,7 @@ import com.realmtech.transferscheduler.domain.exception.DomainException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class TransferSchedule {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
+    @Setter
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal fee;
 
