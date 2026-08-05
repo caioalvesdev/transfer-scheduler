@@ -83,7 +83,7 @@ jobs:
           script: |
             cat > docker-compose.yml << EOF
             services:
-              app:
+              backend:
                 image: caiodev027/desafiotecnico-backend:${{ github.event.workflow_run.head_sha }}
                 container_name: desafiotecnico-backend
                 restart: always
