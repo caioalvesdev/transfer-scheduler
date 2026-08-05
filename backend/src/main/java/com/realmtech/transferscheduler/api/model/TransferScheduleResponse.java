@@ -13,16 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TransferScheduleResponse {
     private UUID id;
-
     private String sourceAccount;
-
     private String destinationAccount;
-
     private BigDecimal amount;
-
     private BigDecimal fee;
-
     private OffsetDateTime transferDate;
-
     private OffsetDateTime schedulingDate;
 }

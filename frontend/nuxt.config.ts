@@ -16,6 +16,11 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2026-06-30',
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8080'
+    }
+  },
 
   eslint: {
     config: {
