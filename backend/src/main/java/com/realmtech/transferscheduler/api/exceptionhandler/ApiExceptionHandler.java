@@ -63,13 +63,4 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return problemDetail;
     }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ProblemDetail handleDataIntegrity(DataIntegrityViolationException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
-        problemDetail.setTitle("Recurso está em uso");
-        problemDetail.setType(URI.create("https://algatransito.com/erros/recurso-em-uso"));
-
-        return problemDetail;
-    }
 }
