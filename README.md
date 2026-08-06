@@ -7,10 +7,16 @@ Sistema de agendamento de transferências financeiras, desenvolvido como desafio
 - Frontend: https://desafio-frontend.realmtech.cloud
 - Backend: https://desafio-backend.realmtech.cloud
 
+## Screenshots
+
+![Extrato de transferências agendadas](docs/screenshots/front-end1.png)
+![Modal de nova transferência](docs/screenshots/front-end2.png)
+![Resposta da API em produção](docs/screenshots/back-end1.png)
+
 ## Estrutura do projeto
 
-- [`backend/`](backend/README.md) — API REST em Java 11 + Spring Boot, responsável pelas regras de negócio, cálculo de taxa e persistência.
-- [`frontend/`](frontend/README.md) — interface em Nuxt (Vue 3) para cadastrar e listar os agendamentos.
+- [`backend/`](backend/README.md): API REST em Java 11 + Spring Boot, responsável pelas regras de negócio, cálculo de taxa e persistência.
+- [`frontend/`](frontend/README.md): interface em Nuxt (Vue 3) para cadastrar e listar os agendamentos.
 
 Cada pasta tem seu próprio README com decisões arquiteturais, versões e instruções de subida específicas.
 
@@ -35,7 +41,7 @@ O frontend já aponta para `http://localhost:8080` por padrão (configurável vi
 
 ## CI/CD
 
-- `.github/workflows/test.yml` — roda os testes do backend a cada push/PR.
-- `.github/workflows/deploy.yml` — ao término bem-sucedido dos testes na branch `master`, builda as imagens Docker de backend e frontend, publica no Docker Hub e sobe os containers na VPS via SSH.
+- `.github/workflows/test.yml`: roda os testes do backend a cada push/PR.
+- `.github/workflows/deploy.yml`: ao término bem-sucedido dos testes na branch `master`, builda as imagens Docker de backend e frontend, publica no Docker Hub e sobe os containers na VPS via SSH.
 - **Docker**: cada app tem seu próprio `Dockerfile` (`backend/Dockerfile`, `frontend/Dockerfile`), gerando imagens independentes.
 - **Dokploy**: usado na VPS para expor os containers nos domínios de produção (`desafio-frontend.realmtech.cloud`, `desafio-backend.realmtech.cloud`).
