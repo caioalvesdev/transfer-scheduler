@@ -115,6 +115,14 @@ watch(isSuccess, (success) => {
               </UChip>
             </UButton>
           </UTooltip>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            to="https://github.com/caioalvesdev/transfer-scheduler"
+            target="_blank"
+            icon="i-simple-icons-github"
+            aria-label="GitHub"
+          />
         </template>
       </UDashboardNavbar>
       <UDashboardToolbar :ui="{ right: 'gap-3' }">
@@ -187,7 +195,10 @@ watch(isSuccess, (success) => {
                         />
 
                         <template #content>
-                          <UCalendar v-model="formState.transferDate" class="p-2" />
+                          <UCalendar
+                            v-model="formState.transferDate"
+                            class="p-2"
+                          />
                         </template>
                       </UPopover>
                     </template>
